@@ -12,6 +12,7 @@ import Entries from './pages/Entries'
 import Bills from './pages/Bills'
 import BillDetail from './pages/BillDetail'
 import Settings from './pages/Settings'
+import NotFound from './pages/NotFound'
 import LoadingSpinner from './components/LoadingSpinner'
 
 const ProtectedRoute = ({ children }) => {
@@ -40,7 +41,7 @@ function AppRoutes() {
       <Route path="/bills" element={<ProtectedRoute><Layout><Bills /></Layout></ProtectedRoute>} />
       <Route path="/bills/:customerId/:month" element={<ProtectedRoute><Layout><BillDetail /></Layout></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
     </Routes>
   )
 }
