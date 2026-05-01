@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { subscribeToAuth, signInWithGoogle, signOut as firebaseSignOut } from '../firebase/auth'
 
 const AuthContext = createContext(null)
@@ -6,13 +6,30 @@ const AuthContext = createContext(null)
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const timeoutRef = useRef(null)
 
   useEffect(() => {
+    let unsubscribed = false
+
+    timeoutRef.current = setTimeout(() => {
+      if (!unsubscribed && loading) {
+        setLoading(false)
+      }
+    }, 5000)
+
     const unsubscribe = subscribeToAuth((user) => {
-      setUser(user)
-      setLoading(false)
+      if (!unsubscribed) {
+        setUser(user)
+        setLoading(false)
+        clearTimeout(timeoutRef.current)
+      }
     })
-    return unsubscribe
+
+    return () => {
+      unsubscribed = true
+      unsubscribe()
+      clearTimeout(timeoutRef.current)
+    }
   }, [])
 
   const login = async () => {
