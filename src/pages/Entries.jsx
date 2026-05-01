@@ -458,8 +458,8 @@ const BulkEntryModal = ({
       onClick={onClose}
     >
       <div
-        className="modal-panel flex flex-col overflow-hidden"
-        style={{ backgroundColor: "var(--bg-card)", width: "min(100%, 760px)" }}
+        className="modal-panel flex flex-col sm:w-[760px]"
+        style={{ backgroundColor: "var(--bg-card)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -475,10 +475,10 @@ const BulkEntryModal = ({
             Close
           </button>
         </div>
-        <div className="flex-1 overflow-auto px-5 py-3">
-          <div className="min-w-[620px]">
+        <div className="flex-1 overflow-auto px-4 py-3">
+          <div className="min-w-0 sm:min-w-[620px]">
             <div
-              className="grid grid-cols-[1.4fr_150px_96px_96px_96px] gap-3 px-1 pb-2 text-xs font-medium sticky top-0 z-10"
+              className="hidden sm:grid grid-cols-[1.4fr_150px_96px_96px_96px] gap-3 px-1 pb-2 text-xs font-medium sticky top-0 z-10"
               style={{
                 color: "var(--text-muted)",
                 backgroundColor: "var(--bg-card)",
@@ -504,12 +504,12 @@ const BulkEntryModal = ({
                 return (
                   <div
                     key={row.id}
-                    className="grid grid-cols-[1.4fr_150px_96px_96px_96px] gap-3 items-center border-t pt-2"
+                    className="flex flex-col sm:grid sm:grid-cols-[1.4fr_150px_96px_96px_96px] gap-3 items-start sm:items-center border-t py-4 sm:py-2"
                     style={{ borderColor: "var(--border-light)" }}
                   >
-                    <div className="min-w-0">
+                    <div className="min-w-0 w-full sm:w-auto">
                       <p
-                        className="text-sm font-medium truncate"
+                        className="text-sm font-semibold sm:font-medium truncate"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {row.customerName}
@@ -525,40 +525,50 @@ const BulkEntryModal = ({
                         </button>
                       )}
                     </div>
-                    <input
-                      type="date"
-                      value={row.date}
-                      onChange={(e) => updateRow(i, "date", e.target.value)}
-                      className="input-field py-2 px-2 text-sm"
-                    />
-                    <input
-                      type="number"
-                      step="1"
-                      min="0"
-                      placeholder="0"
-                      value={row.milkQty}
-                      onChange={(e) => updateRow(i, "milkQty", e.target.value)}
-                      className="input-field text-center py-2 px-2 font-mono text-sm"
-                    />
-                    <input
-                      type="number"
-                      step="1"
-                      min="0"
-                      placeholder="0"
-                      value={row.curdQty}
-                      onChange={(e) => updateRow(i, "curdQty", e.target.value)}
-                      className="input-field text-center py-2 px-2 font-mono text-sm"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => addNextDateForCustomer(row.customerId)}
-                      className="btn-secondary flex items-center justify-center gap-1 px-2 py-2 text-sm"
-                      disabled={!isLastForCustomer}
-                      style={!isLastForCustomer ? { opacity: 0.35 } : undefined}
-                    >
-                      <Plus className="w-4 h-4" />
-                      Day
-                    </button>
+                    <div className="grid grid-cols-2 gap-2 w-full sm:flex sm:items-center sm:gap-3">
+                      <div className="col-span-2 sm:col-span-1 sm:w-[150px]">
+                        <input
+                          type="date"
+                          value={row.date}
+                          onChange={(e) => updateRow(i, "date", e.target.value)}
+                          className="input-field py-2 px-2 text-sm"
+                        />
+                      </div>
+                      <div className="col-span-1">
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          step="1"
+                          min="0"
+                          placeholder="Milk"
+                          value={row.milkQty}
+                          onChange={(e) => updateRow(i, "milkQty", e.target.value)}
+                          className="input-field text-center py-2 px-1 font-mono text-sm"
+                        />
+                      </div>
+                      <div className="col-span-1 flex gap-2">
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          step="1"
+                          min="0"
+                          placeholder="Curd"
+                          value={row.curdQty}
+                          onChange={(e) => updateRow(i, "curdQty", e.target.value)}
+                          className="input-field text-center py-2 px-1 font-mono text-sm flex-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => addNextDateForCustomer(row.customerId)}
+                          className="btn-secondary flex items-center justify-center p-2 text-sm h-[40px] w-[44px] flex-shrink-0"
+                          disabled={!isLastForCustomer}
+                          style={!isLastForCustomer ? { opacity: 0.35 } : undefined}
+                          title="Add next day"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 );
               })}

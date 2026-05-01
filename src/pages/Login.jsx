@@ -25,7 +25,7 @@ const Login = () => {
   if (authLoading) return <LoadingSpinner fullScreen />
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--bg-base)' }}>
+    <div className="min-h-[100dvh] flex items-center justify-center p-4" style={{ backgroundColor: 'var(--bg-base)' }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg" style={{ backgroundColor: 'var(--color-primary)' }}>

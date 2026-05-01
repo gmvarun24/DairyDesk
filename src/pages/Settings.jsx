@@ -75,14 +75,14 @@ const Settings = () => {
               <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Milk Rate (per packet)</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono" style={{ color: 'var(--text-muted)' }}>{formData.currency}</span>
-                <input type="number" step="1" min="0" value={formData.milkRatePerPacket} onChange={(e) => setFormData((prev) => ({ ...prev, milkRatePerPacket: e.target.value }))} className="input-field pl-8 font-mono" placeholder="30" />
+                <input type="number" inputMode="numeric" step="1" min="0" value={formData.milkRatePerPacket} onChange={(e) => setFormData((prev) => ({ ...prev, milkRatePerPacket: e.target.value }))} className="input-field pl-8 font-mono" placeholder="30" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Curd Rate (per packet)</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono" style={{ color: 'var(--text-muted)' }}>{formData.currency}</span>
-                <input type="number" step="1" min="0" value={formData.curdRatePerPacket} onChange={(e) => setFormData((prev) => ({ ...prev, curdRatePerPacket: e.target.value }))} className="input-field pl-8 font-mono" placeholder="40" />
+                <input type="number" inputMode="numeric" step="1" min="0" value={formData.curdRatePerPacket} onChange={(e) => setFormData((prev) => ({ ...prev, curdRatePerPacket: e.target.value }))} className="input-field pl-8 font-mono" placeholder="40" />
               </div>
             </div>
             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Default rate used when no month-specific rate is set.</p>
@@ -102,11 +102,11 @@ const Settings = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Milk Rate</label>
-                  <input type="number" step="1" min="0" value={monthRate.milk} onChange={(e) => setMonthRate((prev) => ({ ...prev, milk: e.target.value }))} className="input-field font-mono" placeholder="30" />
+                  <input type="number" inputMode="numeric" step="1" min="0" value={monthRate.milk} onChange={(e) => setMonthRate((prev) => ({ ...prev, milk: e.target.value }))} className="input-field font-mono" placeholder="30" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Curd Rate</label>
-                  <input type="number" step="1" min="0" value={monthRate.curd} onChange={(e) => setMonthRate((prev) => ({ ...prev, curd: e.target.value }))} className="input-field font-mono" placeholder="40" />
+                  <input type="number" inputMode="numeric" step="1" min="0" value={monthRate.curd} onChange={(e) => setMonthRate((prev) => ({ ...prev, curd: e.target.value }))} className="input-field font-mono" placeholder="40" />
                 </div>
               </div>
               <button type="submit" className="btn-primary w-full">Set Rate</button>

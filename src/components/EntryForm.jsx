@@ -112,11 +112,11 @@ const EntryForm = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Milk (packets)</label>
-              <input type="number" step="1" min="0" placeholder="0" value={formData.milkQty} onChange={(e) => setFormData((prev) => ({ ...prev, milkQty: e.target.value }))} className="input-field font-mono" />
+              <input type="number" inputMode="numeric" step="1" min="0" placeholder="0" value={formData.milkQty} onChange={(e) => setFormData((prev) => ({ ...prev, milkQty: e.target.value }))} className="input-field font-mono" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Curd (packets)</label>
-              <input type="number" step="1" min="0" placeholder="0" value={formData.curdQty} onChange={(e) => setFormData((prev) => ({ ...prev, curdQty: e.target.value }))} className="input-field font-mono" />
+              <input type="number" inputMode="numeric" step="1" min="0" placeholder="0" value={formData.curdQty} onChange={(e) => setFormData((prev) => ({ ...prev, curdQty: e.target.value }))} className="input-field font-mono" />
             </div>
           </div>
           {errors.quantity && <p className="text-xs -mt-2" style={{ color: 'var(--color-danger)' }}>{errors.quantity}</p>}

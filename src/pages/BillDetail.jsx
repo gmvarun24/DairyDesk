@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Printer, Share2, CheckCircle, Circle } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { useEntries } from '../hooks/useEntries'
 import { useCustomers } from '../hooks/useCustomers'
 import { useSettings } from '../hooks/useSettings'
@@ -35,9 +36,26 @@ const BillDetail = () => {
 
   const handleShare = async () => {
     const billText = generateBillText()
-    if (navigator.share) {
-      try { await navigator.share({ title: `Bill - ${customer?.name} - ${formatMonth(month)}`, text: billText }) } catch { copyToClipboard(billText) }
-    } else { copyToClipboard(billText) }
+    
+    // Check if Web Share API is supported AND we are in a secure context
+    if (navigator.share && navigator.canShare && navigator.canShare({ text: billText })) {
+      try {
+        await navigator.share({
+          title: `Bill - ${customer?.name}`,
+          text: billText
+        })
+        return
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Share failed:', error)
+        } else {
+          return // User cancelled, don't fallback to copy
+        }
+      }
+    }
+    
+    // Fallback to clipboard
+    copyToClipboard(billText)
   }
 
   const generateBillText = () => {
@@ -52,8 +70,32 @@ const BillDetail = () => {
     return text
   }
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text).then(() => alert('Bill copied to clipboard!')).catch(() => alert('Failed to copy.'))
+  const copyToClipboard = async (text) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text)
+        toast.success('Bill copied to clipboard!')
+      } else {
+        // Fallback for non-secure contexts (like local IP testing)
+        const textArea = document.createElement('textarea')
+        textArea.value = text
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-9999px'
+        textArea.style.top = '0'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        try {
+          document.execCommand('copy')
+          toast.success('Bill copied to clipboard!')
+        } catch (err) {
+          toast.error('Failed to copy bill')
+        }
+        document.body.removeChild(textArea)
+      }
+    } catch (err) {
+      toast.error('Failed to copy bill')
+    }
   }
 
   if (!customer) return <LoadingSpinner />
