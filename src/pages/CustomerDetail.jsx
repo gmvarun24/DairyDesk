@@ -8,13 +8,14 @@ import { useSettings } from '../hooks/useSettings'
 import { calculateBill } from '../utils/billCalculator'
 import { formatCurrency, formatDateShort, getCurrentMonth, formatMonth } from '../utils/formatters'
 import ConfirmDialog from '../components/ConfirmDialog'
+import EntryForm from '../components/EntryForm'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 const CustomerDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { updateCustomer } = useApp()
-  const { getCustomer, customers } = useCustomers()
+  const { updateCustomer, updateEntry } = useApp()
+  const { customers } = useCustomers()
   const { getEntriesByCustomerAndMonth } = useEntries()
   const { settings, getRateForMonth } = useSettings()
 
@@ -27,6 +28,7 @@ const CustomerDetail = () => {
 
   const [editing, setEditing] = useState(false)
   const [editData, setEditData] = useState({ name: '', phone: '', address: '' })
+  const [editingEntry, setEditingEntry] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   if (!customer) return <LoadingSpinner />
@@ -126,14 +128,19 @@ const CustomerDetail = () => {
             {customerEntries.map((entry) => {
               const amount = (entry.milkQty || 0) * (rates.milkRatePerPacket || 0) + (entry.curdQty || 0) * (rates.curdRatePerPacket || 0)
               return (
-                <div key={entry.id} className="card flex items-center justify-between py-3 px-5">
+                <button
+                  key={entry.id}
+                  onClick={() => setEditingEntry(entry)}
+                  className="card card-interactive w-full flex items-center justify-between gap-3 py-3 px-5 text-left"
+                >
                   <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{formatDateShort(entry.date)}</span>
                   <div className="flex items-center gap-3 text-sm">
                     {entry.milkQty > 0 && <span className="font-mono" style={{ color: 'var(--text-muted)' }}>{entry.milkQty}M</span>}
                     {entry.curdQty > 0 && <span className="font-mono" style={{ color: 'var(--text-muted)' }}>{entry.curdQty}C</span>}
                     <span className="font-mono font-semibold" style={{ color: 'var(--color-primary)' }}>{formatCurrency(amount, settings?.currency)}</span>
+                    <Edit className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
                   </div>
-                </div>
+                </button>
               )
             })}
           </div>
@@ -151,6 +158,18 @@ const CustomerDetail = () => {
       </div>
 
       <ConfirmDialog isOpen={confirmDelete} title="Delete Customer" message={`Are you sure you want to delete "${customer.name}"? ${customerEntries.length > 0 ? 'This will deactivate the customer.' : 'This cannot be undone.'}`} confirmText="Delete" onConfirm={handleDelete} onCancel={() => setConfirmDelete(false)} />
+
+      <EntryForm
+        isOpen={!!editingEntry}
+        onClose={() => setEditingEntry(null)}
+        onSave={async (data) => {
+          if (!editingEntry) return
+          await updateEntry(editingEntry.id, data)
+          setEditingEntry(null)
+        }}
+        initialData={editingEntry}
+        mode="edit"
+      />
     </div>
   )
 }

@@ -7,7 +7,8 @@ import ModalPortal from './ModalPortal'
 
 const EntryForm = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) => {
   const { settings } = useSettings()
-  const { activeCustomers } = useCustomers()
+  const { customers, activeCustomers } = useCustomers()
+  const selectableCustomers = mode === 'edit' ? customers : activeCustomers
   const [formData, setFormData] = useState({
     customerId: '',
     customerName: '',
@@ -43,7 +44,7 @@ const EntryForm = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) => {
 
   const handleCustomerChange = (e) => {
     const customerId = e.target.value
-    const customer = activeCustomers.find((c) => c.id === customerId)
+    const customer = selectableCustomers.find((c) => c.id === customerId)
     setFormData((prev) => ({ ...prev, customerId, customerName: customer?.name || '' }))
   }
 
@@ -96,7 +97,7 @@ const EntryForm = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) => {
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Customer</label>
             <select value={formData.customerId} onChange={handleCustomerChange} className="input-field">
               <option value="">Select customer</option>
-              {activeCustomers.map((c) => (
+              {selectableCustomers.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>

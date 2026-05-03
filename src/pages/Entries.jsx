@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Plus, Zap } from "lucide-react";
+import { Edit, Plus, Zap } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useEntries } from "../hooks/useEntries";
 import { useCustomers } from "../hooks/useCustomers";
@@ -53,6 +53,11 @@ const Entries = () => {
   }, [filteredEntries]);
 
   const lastEntry = state.lastEntry || null;
+
+  const handleEditEntry = (entry) => {
+    setEditingEntry(entry);
+    setShowEntryForm(true);
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -199,7 +204,7 @@ const Entries = () => {
                     key={entry.id}
                     entry={entry}
                     settings={settings}
-                    onEdit={() => setEditingEntry(entry)}
+                    onEdit={() => handleEditEntry(entry)}
                     onDelete={() => setDeleteTarget(entry)}
                   />
                 ))}
@@ -255,7 +260,7 @@ const Entries = () => {
           setEditingEntry(null);
         }}
         initialData={editingEntry}
-        mode={editingEntry ? "edit" : "add"}
+        mode={editingEntry?.id ? "edit" : "add"}
       />
 
       <BulkEntryModal
@@ -332,10 +337,24 @@ const EntryRow = ({ entry, settings, onEdit, onDelete }) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
+            onEdit();
+          }}
+          className="p-1.5 rounded-lg"
+          style={{ color: "var(--text-muted)" }}
+          title="Edit entry"
+          aria-label="Edit entry"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
             onDelete();
           }}
           className="p-1.5 rounded-lg"
           style={{ color: "var(--text-muted)" }}
+          title="Delete entry"
+          aria-label="Delete entry"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
